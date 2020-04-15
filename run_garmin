@@ -1,3 +1,0 @@
-#!/bin/bash
-envsubst <  ../GarminConnectConfig.json > GarminConnectConfig.json
-python garmin.py $@
