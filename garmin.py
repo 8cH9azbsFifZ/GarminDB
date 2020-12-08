@@ -254,7 +254,7 @@ def main(argv):
     debug = 0
     test = False
     monitoring = False
-    overwite = False
+    overwrite = False
     weight = False
     rhr = False
     sleep = False
