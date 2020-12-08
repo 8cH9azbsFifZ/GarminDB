@@ -62,7 +62,7 @@ def __get_date_and_days(db, latest, table, col, stat_name):
     return (date, days)
 
 
-def copy_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
+def copy_data(overwrite, latest, weight, monitoring, sleep, rhr, activities):
     """Copy data from a mounted Garmin USB device to files."""
     copy = Copy(gc_gonfig.device_mount_dir())
 
@@ -77,7 +77,7 @@ def copy_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
         copy.copy_monitoring(monitoring_dir, latest)
 
 
-def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
+def download_data(overwrite, latest, weight, monitoring, sleep, rhr, activities):
     """Download selected activity types from Garmin Connect and save the data in files. Overwrite previously downloaded data if indicated."""
     db_params_dict = GarminDBConfigManager.get_db_params()
 
@@ -93,8 +93,8 @@ def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
             activity_count = gc_gonfig.all_activity_count()
         activities_dir = GarminDBConfigManager.get_or_create_activities_dir()
         root_logger.info("Fetching %d activities to %s", activity_count, activities_dir)
-        download.get_activity_types(activities_dir, overwite)
-        download.get_activities(activities_dir, activity_count, overwite)
+        download.get_activity_types(activities_dir, overwrite)
+        download.get_activities(activities_dir, activity_count, overwrite)
         download.unzip_files(activities_dir)
 
     if monitoring:
@@ -102,7 +102,7 @@ def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
         if days > 0:
             monitoring_dir = GarminDBConfigManager.get_or_create_monitoring_dir(date.year)
             root_logger.info("Date range to update: %s (%d) to %s", date, days, monitoring_dir)
-            download.get_daily_summaries(monitoring_dir, date, days, overwite)
+            download.get_daily_summaries(monitoring_dir, date, days, overwrite)
             download.get_monitoring(date, days)
             download.unzip_files(monitoring_dir)
             root_logger.info("Saved monitoring files for %s (%d) to %s for processing", date, days, monitoring_dir)
@@ -112,7 +112,7 @@ def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
         if days > 0:
             sleep_dir = GarminDBConfigManager.get_or_create_sleep_dir()
             root_logger.info("Date range to update: %s (%d) to %s", date, days, sleep_dir)
-            download.get_sleep(sleep_dir, date, days, overwite)
+            download.get_sleep(sleep_dir, date, days, overwrite)
             root_logger.info("Saved sleep files for %s (%d) to %s for processing", date, days, sleep_dir)
 
     if weight:
@@ -120,7 +120,7 @@ def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
         if days > 0:
             weight_dir = GarminDBConfigManager.get_or_create_weight_dir()
             root_logger.info("Date range to update: %s (%d) to %s", date, days, weight_dir)
-            download.get_weight(weight_dir, date, days, overwite)
+            download.get_weight(weight_dir, date, days, overwrite)
             root_logger.info("Saved weight files for %s (%d) to %s for processing", date, days, weight_dir)
 
     if rhr:
@@ -128,7 +128,7 @@ def download_data(overwite, latest, weight, monitoring, sleep, rhr, activities):
         if days > 0:
             rhr_dir = GarminDBConfigManager.get_or_create_rhr_dir()
             root_logger.info("Date range to update: %s (%d) to %s", date, days, rhr_dir)
-            download.get_rhr(rhr_dir, date, days, overwite)
+            download.get_rhr(rhr_dir, date, days, overwrite)
             root_logger.info("Saved rhr files for %s (%d) to %s for processing", date, days, rhr_dir)
 
 
@@ -305,7 +305,7 @@ def main(argv):
             logging.debug("Monitoring")
             monitoring = True
         elif opt in ("-o", "--overwrite"):
-            overwite = True
+            overwrite = True
         elif opt in ("-l", "--latest"):
             latest = True
         elif opt in ("-r", "--rhr"):
@@ -328,10 +328,10 @@ def main(argv):
         sys.exit()
 
     if _copy_data:
-        copy_data(overwite, latest, weight, monitoring, sleep, rhr, activities)
+        copy_data(overwrite, latest, weight, monitoring, sleep, rhr, activities)
 
     if _download_data:
-        download_data(overwite, latest, weight, monitoring, sleep, rhr, activities)
+        download_data(overwrite, latest, weight, monitoring, sleep, rhr, activities)
 
     if _import_data:
         import_data(debug, test, latest, weight, monitoring, sleep, rhr, activities)
